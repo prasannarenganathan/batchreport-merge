@@ -28,12 +28,12 @@ public class MergeServiceImpl implements MergeService {
 	public void mergeAndSendNotification() {
 
 		List<Notification> notifications = notificationRepository.findByNotificationWorkflowStatusTypeCode(MergeConstants.DEFERRED);
-		//update the status to from DEFERRED
+		//update the status to STAGED from DEFERRED
 		
 		//process notifications for publishing the notifications
 		List<String> globalNotificationIds = processNotifcations(notifications);
 		
-		// send notifications
+		// send notification Ids to PubSub Service
 		pubSubService.sendNotifications(globalNotificationIds);
 
 	}
