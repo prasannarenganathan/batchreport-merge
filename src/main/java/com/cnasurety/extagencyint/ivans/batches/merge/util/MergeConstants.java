@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge.util;
+package com.cnasurety.extagencyint.ivans.batches.merge.util;
 
 public class MergeConstants {
 

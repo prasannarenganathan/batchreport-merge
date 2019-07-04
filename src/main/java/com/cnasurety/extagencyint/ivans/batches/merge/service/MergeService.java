@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge.service;
+package com.cnasurety.extagencyint.ivans.batches.merge.service;
 
 
 public interface MergeService {

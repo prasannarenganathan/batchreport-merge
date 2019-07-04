@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge.repository;
+package com.cnasurety.extagencyint.ivans.batches.merge.repository;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cnasurety.extagencyint.batches.ivans.merge.model.Notification;
+import com.cnasurety.extagencyint.ivans.batches.merge.model.Notification;
 
 
 

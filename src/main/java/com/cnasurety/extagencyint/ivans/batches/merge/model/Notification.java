@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge.model;
+package com.cnasurety.extagencyint.ivans.batches.merge.model;
 
 
 import java.sql.Date;

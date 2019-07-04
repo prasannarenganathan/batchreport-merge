@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge.service;
+package com.cnasurety.extagencyint.ivans.batches.merge.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.cnasurety.extagencyint.batches.ivans.merge.model.Notification;
-import com.cnasurety.extagencyint.batches.ivans.merge.repository.NotificationRepository;
-import com.cnasurety.extagencyint.batches.ivans.merge.util.MergeConstants;
+import com.cnasurety.extagencyint.ivans.batches.merge.model.Notification;
+import com.cnasurety.extagencyint.ivans.batches.merge.pubsub.PubSubService;
+import com.cnasurety.extagencyint.ivans.batches.merge.repository.NotificationRepository;
+import com.cnasurety.extagencyint.ivans.batches.merge.util.MergeConstants;
 
 @Component
 public class MergeServiceImpl implements MergeService {
@@ -20,10 +21,24 @@ public class MergeServiceImpl implements MergeService {
     
     @Autowired
     NotificationRepository notificationRepository;
+    
+    @Autowired
+    PubSubService pubSubService;
 
 	public void mergeAndSendNotification() {
 
 		List<Notification> notifications = notificationRepository.findByNotificationWorkflowStatusTypeCode(MergeConstants.DEFERRED);
+		//update the status to from DEFERRED
+		
+		//process notifications for publishing the notifications
+		List<String> globalNotificationIds = processNotifcations(notifications);
+		
+		// send notifications
+		pubSubService.sendNotifications(globalNotificationIds);
+
+	}
+	
+	private List<String> processNotifcations(List<Notification> notifications){
 		Map<String,String> notificationKey = new HashMap<String,String>();
 		StringBuilder key =null;
 		for (Notification notification : notifications) {
@@ -41,8 +56,6 @@ public class MergeServiceImpl implements MergeService {
 				notificationKey.put(key.toString(), notification.getNotificationGlobalId());
 			}
 		}
-		List<String> notificationGlobalIdList = new ArrayList<String>(notificationKey.values());
-		System.out.println(notificationGlobalIdList);
-
+		return new ArrayList<String>(notificationKey.values());
 	}
 }

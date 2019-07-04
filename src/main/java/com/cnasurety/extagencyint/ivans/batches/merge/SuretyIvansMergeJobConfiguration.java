@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge;
+package com.cnasurety.extagencyint.ivans.batches.merge;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import com.cnasurety.extagencyint.batches.ivans.merge.service.MergeService;
+
+import com.cnasurety.extagencyint.ivans.batches.merge.service.MergeService;
 
 @Configuration
 @EnableBatchProcessing
@@ -37,7 +38,7 @@ public class SuretyIvansMergeJobConfiguration {
     
     @Bean
     @StepScope
-    public Tasklet purgeTransactionsTablesTasklet(@Value("#{jobParameters['message']}") String message) {
+    public Tasklet mergeTransactionsTablesTasklet(@Value("#{jobParameters['message']}") String message) {
         LOGGER.info(message);
 
         return (stepContribution, chunkContext) -> {
@@ -48,10 +49,10 @@ public class SuretyIvansMergeJobConfiguration {
 
  
     @Bean
-    public Step purgeTransactiosStep() {
+    public Step mergeTransactiosStep() {
 
         return stepBuilderFactory.get("purgeTransactionsTablesTasklet")
-                .tasklet(purgeTransactionsTablesTasklet("deleting Transaction tables records which are less than 90 days")).build();
+                .tasklet(mergeTransactionsTablesTasklet("deleting Transaction tables records which are less than 90 days")).build();
 
     }
     
@@ -64,7 +65,7 @@ public class SuretyIvansMergeJobConfiguration {
         JobBuilder jobBuilder = jobBuilderFactory
                 .get("Export Job: " + String.valueOf(new java.util.Random().nextInt()));
         SimpleJobBuilder sbuilder = jobBuilder.
-        		start(purgeTransactiosStep());
+        		start(mergeTransactiosStep());
         Job job = sbuilder.build();
         return job;
 

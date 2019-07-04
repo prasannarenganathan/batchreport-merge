@@ -1,4 +1,4 @@
-package com.cnasurety.extagencyint.batches.ivans.merge;
+package com.cnasurety.extagencyint.ivans.batches.merge;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
