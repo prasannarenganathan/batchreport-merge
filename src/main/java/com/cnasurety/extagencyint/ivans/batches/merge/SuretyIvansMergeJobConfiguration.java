@@ -51,8 +51,8 @@ public class SuretyIvansMergeJobConfiguration {
     @Bean
     public Step mergeTransactiosStep() {
 
-        return stepBuilderFactory.get("purgeTransactionsTablesTasklet")
-                .tasklet(mergeTransactionsTablesTasklet("deleting Transaction tables records which are less than 90 days")).build();
+        return stepBuilderFactory.get("mergeTransactionsTablesTasklet")
+                .tasklet(mergeTransactionsTablesTasklet("Merge Notifications, update status and call PUBSUB service ")).build();
 
     }
     
@@ -63,7 +63,7 @@ public class SuretyIvansMergeJobConfiguration {
     	
         
         JobBuilder jobBuilder = jobBuilderFactory
-                .get("Export Job: " + String.valueOf(new java.util.Random().nextInt()));
+                .get("Merge Job: " + String.valueOf(new java.util.Random().nextInt()));
         SimpleJobBuilder sbuilder = jobBuilder.
         		start(mergeTransactiosStep());
         Job job = sbuilder.build();

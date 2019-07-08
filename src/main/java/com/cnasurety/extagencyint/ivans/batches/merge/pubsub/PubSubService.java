@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface PubSubService {
 
-	public void sendNotifications(List<String> notificationsIds);
+	public String sendNotifications(List<String> notificationsIds);
 	
 }

@@ -10,8 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
 @Table(name = "\"NOTIFICATION_TBL\"", schema = "workflow")
+@DynamicUpdate
 public class Notification {
 
     @Id

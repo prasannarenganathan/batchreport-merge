@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 public class PubSubServiceImpl implements PubSubService{
 
 	@Override
-	public void sendNotifications(List<String> notificationsIds) {
+	public String sendNotifications(List<String> notificationsIds) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

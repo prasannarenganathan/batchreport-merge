@@ -6,4 +6,5 @@ public class MergeConstants {
 	public static final String DEFERRED = "DEFERRED";
 	public static final String TRANSACT = "TRANSACT";
 	public static final String NEWBUSN = "NEWBUSN";
+	public static final String STAGED = "STAGED";
 }

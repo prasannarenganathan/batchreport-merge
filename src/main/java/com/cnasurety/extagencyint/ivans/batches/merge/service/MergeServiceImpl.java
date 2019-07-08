@@ -28,15 +28,16 @@ public class MergeServiceImpl implements MergeService {
 	public void mergeAndSendNotification() {
 
 		List<Notification> notifications = notificationRepository.findByNotificationWorkflowStatusTypeCode(MergeConstants.DEFERRED);
-		//update the status to STAGED from DEFERRED
 		
-		//process notifications for publishing the notifications
+		//process notifications for publishing the notifications and update the status to STAGED from DEFERRED
 		List<String> globalNotificationIds = processNotifcations(notifications);
 		
 		// send notification Ids to PubSub Service
 		pubSubService.sendNotifications(globalNotificationIds);
+		
 
 	}
+	
 	
 	private List<String> processNotifcations(List<Notification> notifications){
 		Map<String,String> notificationKey = new HashMap<String,String>();
@@ -55,6 +56,8 @@ public class MergeServiceImpl implements MergeService {
 			}else {
 				notificationKey.put(key.toString(), notification.getNotificationGlobalId());
 			}
+			notification.setNotificationWorkflowStatusTypeCode(MergeConstants.STAGED);
+			notificationRepository.save(notification);
 		}
 		return new ArrayList<String>(notificationKey.values());
 	}
