@@ -1,15 +1,19 @@
 package com.cnasurety.extagencyint.ivans.batches.merge;
 
+
+
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.job.builder.SimpleJobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +22,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import com.cnasurety.extagencyint.ivans.batches.merge.model.Notification;
+import com.cnasurety.extagencyint.ivans.batches.merge.processor.NotificationItemProcessor;
+import com.cnasurety.extagencyint.ivans.batches.merge.reader.NotificationItemReader;
 import com.cnasurety.extagencyint.ivans.batches.merge.service.MergeService;
+import com.cnasurety.extagencyint.ivans.batches.merge.writer.NotificationItemWriter;
 
 @Configuration
 @EnableBatchProcessing
 @Component
-public class SuretyIvansMergeJobConfiguration {
+public class SuretyIvansMergeJobConfiguration extends DefaultBatchConfigurer {
 
+	
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -35,6 +44,16 @@ public class SuretyIvansMergeJobConfiguration {
 
     @Autowired
     MergeService purgeService;
+    
+    @Autowired
+    NotificationItemReader notificationItemReader;
+
+    @Autowired
+    NotificationItemProcessor notificationItemProcessor;
+
+    @Autowired
+    NotificationItemWriter notificationItemWriter;
+
     
     @Bean
     @StepScope
@@ -56,20 +75,22 @@ public class SuretyIvansMergeJobConfiguration {
 
     }
     
-   
-    
     @Bean
-    public Job PurgeJob() {
-    	
-        
-        JobBuilder jobBuilder = jobBuilderFactory
-                .get("Merge Job: " + String.valueOf(new java.util.Random().nextInt()));
-        SimpleJobBuilder sbuilder = jobBuilder.
-        		start(mergeTransactiosStep());
-        Job job = sbuilder.build();
-        return job;
+    public Job PurgeJob(JobCompletionNotificationListener listener, Step purgeStep) {
 
+       
+    	 
+
+        return jobBuilderFactory.get("exportIvansMessageJob").incrementer(new RunIdIncrementer()).listener(listener)
+                .flow(purgeStep).end().build();
     }
 
+    @Bean
+    public Step purgeStep() {
+        return stepBuilderFactory.get("notificationStep").<Notification,Map<String,String>>chunk(10)
+                .reader(notificationItemReader).processor(notificationItemProcessor).writer(notificationItemWriter)
+                .build();
+    }
+    
    
 }

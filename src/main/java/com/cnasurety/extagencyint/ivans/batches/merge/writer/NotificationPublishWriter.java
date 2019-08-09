@@ -12,7 +12,7 @@ import com.cnasurety.extagencyint.ivans.batches.merge.pojo.NotificationRequest;
 import com.cnasurety.extagencyint.ivans.batches.merge.pusub.messaging.MessagePublisher;
 
 @Service
-public class NotificationWriter {
+public class NotificationPublishWriter {
 	 @Autowired
 	 MessagePublisher publisher;
 
